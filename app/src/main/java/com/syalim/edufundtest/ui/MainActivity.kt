@@ -1,4 +1,4 @@
-package com.syalim.edufundtest
+package com.syalim.edufundtest.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
