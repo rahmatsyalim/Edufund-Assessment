@@ -6,7 +6,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.syalim.edufundtest.ui.theme.dimenRegular
@@ -19,12 +20,17 @@ import com.syalim.edufundtest.ui.theme.dimenRegular
 
 @Composable
 fun SearchBar(
-   input: String,
    onValueChanged: (String) -> Unit
 ) {
+   var inputText by rememberSaveable {
+      mutableStateOf("")
+   }
    TextField(
-      value = input,
-      onValueChange = { onValueChanged(it) },
+      value = inputText,
+      onValueChange = {
+         inputText = it
+         onValueChanged(it)
+      },
       singleLine = true,
       leadingIcon = {
          Icon(imageVector = Icons.Default.Search, contentDescription = "search")
