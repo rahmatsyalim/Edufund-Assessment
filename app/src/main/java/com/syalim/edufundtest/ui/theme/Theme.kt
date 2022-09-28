@@ -10,26 +10,24 @@ private val DarkColorPalette = darkColors(
    primary = themePrimary,
    primaryVariant = themePrimaryVariant,
    secondary = themeSecondary,
-   secondaryVariant = themeSecondaryVariant
+   secondaryVariant = themeSecondaryVariant,
+   background = themeBackgroundDark,
+   surface = themeSurfaceDark
 )
 
 private val LightColorPalette = lightColors(
    primary = themePrimary,
    primaryVariant = themePrimaryVariant,
    secondary = themeSecondary,
-   secondaryVariant = themeSecondaryVariant
+   secondaryVariant = themeSecondaryVariant,
+   background = themeBackgroundLight,
+   surface = themeSurfaceLight
 )
 
 @Composable
 fun EdufundTestTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-   val colors = if (darkTheme) {
-      DarkColorPalette
-   } else {
-      LightColorPalette
-   }
-
    MaterialTheme(
-      colors = colors,
+      colors = if (darkTheme) DarkColorPalette else LightColorPalette,
       typography = Typography,
       shapes = Shapes,
       content = content
