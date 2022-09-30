@@ -2,52 +2,40 @@ package com.syalim.edufundtest.ui.screens.search_hospital.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import com.syalim.edufundtest.R
+import com.syalim.edufundtest.ui.common.components.CustomTextField
 import com.syalim.edufundtest.ui.theme.dimenRegular
 
 
 /**
- * Created by Rahmat Syalim on 2022/09/28
+ * Created by Rahmat Syalim on 2022/09/30
  * rahmatsyalim@gmail.com
  */
 
 @Composable
 fun SearchBar(
+   value: String,
    onValueChanged: (String) -> Unit
 ) {
-   var inputText by rememberSaveable {
-      mutableStateOf("")
-   }
-   TextField(
-      value = inputText,
-      onValueChange = {
-         inputText = it
-         onValueChanged(it)
-      },
-      singleLine = true,
-      leadingIcon = {
-         Icon(imageVector = Icons.Default.Search, contentDescription = "search")
-      },
-      colors = TextFieldDefaults.textFieldColors(
-         backgroundColor = MaterialTheme.colors.surface,
-         cursorColor = MaterialTheme.colors.onSurface,
-         focusedIndicatorColor = Color.Transparent,
-         unfocusedIndicatorColor = Color.Transparent
-      ),
-      shape = RoundedCornerShape(dimenRegular),
+   CustomTextField(
+      value = value,
+      onValueChanged = onValueChanged,
       modifier = Modifier
          .fillMaxWidth()
-         .padding(dimenRegular),
-      textStyle = MaterialTheme.typography.body1,
-      placeholder = {
-         Text(text = "Search...", style = MaterialTheme.typography.body1)
-      }
+         .padding(horizontal = dimenRegular)
+         .clip(MaterialTheme.shapes.small),
+      backgroundColor = MaterialTheme.colors.background,
+      contentPadding = dimenRegular,
+      startIcon = Icons.Default.Search,
+      startIconTint = MaterialTheme.colors.primary,
+      iconPadding = dimenRegular,
+      hint = stringResource(id = R.string.search_hospital_hint)
    )
 }

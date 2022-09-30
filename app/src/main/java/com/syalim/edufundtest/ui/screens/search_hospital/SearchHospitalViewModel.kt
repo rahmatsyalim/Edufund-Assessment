@@ -1,10 +1,12 @@
 package com.syalim.edufundtest.ui.screens.search_hospital
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.syalim.edufundtest.common.Resource
 import com.syalim.edufundtest.domain.usecase.SearchHospitalUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +22,8 @@ class SearchHospitalViewModel @Inject constructor(
    private val searchHospitalUseCase: SearchHospitalUseCase
 ) : ViewModel() {
 
+   val searchQuery = mutableStateOf("")
+
    private val _searchHospitalUiState = MutableStateFlow(SearchHospitalUiState())
    val searchHospitalUiState get() = _searchHospitalUiState.asStateFlow()
 
@@ -34,6 +38,9 @@ class SearchHospitalViewModel @Inject constructor(
                   is Resource.Failure -> SearchHospitalUiState(error = result.cause)
                }
             }
+         }.onStart {
+            _searchHospitalUiState.update { it.copy(isLoading = true) }
+            delay(500L)
          }.launchIn(this)
       }
    }

@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.syalim.edufundtest.ui.screens.main.MainBottomNavItem
@@ -28,10 +27,9 @@ fun BottomNavBar(
 
    val navBackStackEntry by navController.currentBackStackEntryAsState()
    val currentRoute = navBackStackEntry?.destination?.route
-   Divider()
+
    BottomNavigation(
-      backgroundColor = MaterialTheme.colors.surface,
-      elevation = 0.dp
+      backgroundColor = MaterialTheme.colors.surface
    ) {
       items.forEach { item ->
          val selected = currentRoute == item.route

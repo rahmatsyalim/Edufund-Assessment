@@ -3,4 +3,12 @@
 
    <string name="home">Home</string>
    <string name="search_hospital">Search Hospital</string>
+   <string name="search_hospital_hint">Search hospital…</string>
+
+   <string name="address">Address</string>
+   <string name="phone">Phone</string>
+   <string name="province">Province</string>
+   <string name="region">Region</string>
+
+   <string name="no_hospital_found">No hospital found.</string>
 </resources>

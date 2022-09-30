@@ -21,6 +21,6 @@ interface DekontaminasiDao {
    @Query("SELECT (SELECT COUNT(*) FROM hospitals) == 0")
    suspend fun isHospitalsEmpty(): Boolean
 
-   @Query("SELECT * FROM hospitals WHERE name LIKE '%' || :query || '%' LIMIT 6")
+   @Query("SELECT * FROM hospitals WHERE name LIKE '%' || :query || '%' LIMIT 10")
    suspend fun searchHospitals(query: String): List<HospitalEntity>
 }
