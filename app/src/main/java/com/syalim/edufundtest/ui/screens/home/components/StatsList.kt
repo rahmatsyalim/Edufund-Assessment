@@ -41,16 +41,26 @@ import kotlin.math.absoluteValue
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun StatsListAutoSlide(
+   modifier: Modifier = Modifier,
    data: List<StatsRegional>
 ) {
    val pagerState = rememberPagerState(0)
-   Column(modifier = Modifier.fillMaxWidth()) {
+   Column(modifier = modifier) {
       HorizontalPager(
          state = pagerState,
          count = data.size,
          contentPadding = PaddingValues(dimenRegular),
          itemSpacing = dimenRegular,
-         modifier = Modifier.fillMaxWidth()
+         modifier = Modifier
+            .fillMaxWidth()
+            .background(
+               Brush.verticalGradient(
+                  listOf(
+                     MaterialTheme.colors.surface,
+                     MaterialTheme.colors.background
+                  )
+               )
+            )
       ) { page ->
          StatsListItem(data[page], page)
       }

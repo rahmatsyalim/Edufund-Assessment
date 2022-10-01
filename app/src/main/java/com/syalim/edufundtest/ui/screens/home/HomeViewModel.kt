@@ -26,7 +26,7 @@ class HomeViewModel @Inject constructor(
       getStatsRegional()
    }
 
-   fun getStatsRegional() = getStatsRegionalUseCase.invoke()
+   private fun getStatsRegional() = getStatsRegionalUseCase.invoke()
       .onEach { result ->
          _homeUiState.update {
             when (result) {
@@ -40,4 +40,9 @@ class HomeViewModel @Inject constructor(
       }.onStart {
          _homeUiState.update { it.copy(isLoading = true) }
       }.launchIn(viewModelScope)
+
+   fun refresh() {
+      _homeUiState.update { it.copy(isRefreshing = true) }
+      getStatsRegional()
+   }
 }

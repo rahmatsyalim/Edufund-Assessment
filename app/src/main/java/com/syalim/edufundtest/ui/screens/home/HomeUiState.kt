@@ -9,6 +9,7 @@ import com.syalim.edufundtest.domain.model.StatsRegional
  */
 
 data class HomeUiState(
+   val isRefreshing: Boolean = false,
    val isLoading: Boolean = false,
    val error: Throwable? = null,
    val statsRegionalData: List<StatsRegional>? = null

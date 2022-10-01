@@ -31,8 +31,9 @@ fun SystemUiController.SetupSystemBarColor() {
 @Composable
 fun AppThemeHelper(content: @Composable () -> Unit) {
    EdufundTestTheme {
-      CompositionLocalProvider(LocalElevationOverlay provides null) {
-         content()
-      }
+      CompositionLocalProvider(
+         LocalElevationOverlay provides null,
+         content = content
+      )
    }
 }
