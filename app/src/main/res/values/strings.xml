@@ -5,10 +5,15 @@
    <string name="search_hospital">Search Hospital</string>
    <string name="search_hospital_hint">Search hospital…</string>
 
+   <string name="infected">Infected</string>
+   <string name="recovered">Recovered</string>
+   <string name="fatal">Fatal</string>
+
    <string name="address">Address</string>
    <string name="phone">Phone</string>
    <string name="province">Province</string>
    <string name="region">Region</string>
 
    <string name="no_hospital_found">No hospital found.</string>
+   <string name="something_went_wrong">Oops, something went wrong.</string>
 </resources>

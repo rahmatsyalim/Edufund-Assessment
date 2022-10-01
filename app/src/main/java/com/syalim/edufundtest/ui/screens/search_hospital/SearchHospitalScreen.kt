@@ -73,6 +73,9 @@ fun SearchHospitalScreen(
                SearchHospitalList(data = data)
             }
          }
+         searchResult.error?.let {
+            TextNoData(text = stringResource(id = R.string.something_went_wrong))
+         }
       }
    }
 }

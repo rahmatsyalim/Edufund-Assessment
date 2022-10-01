@@ -1,9 +1,11 @@
 package com.syalim.edufundtest.ui.common
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.syalim.edufundtest.ui.theme.EdufundTestTheme
 
@@ -15,14 +17,15 @@ import com.syalim.edufundtest.ui.theme.EdufundTestTheme
 
 @Composable
 fun SystemUiController.SetupSystemBarColor() {
-   setStatusBarColor(
-      color = MaterialTheme.colors.surface,
-      darkIcons = MaterialTheme.colors.isLight
-   )
-   setNavigationBarColor(
-      color = MaterialTheme.colors.surface,
-      darkIcons = MaterialTheme.colors.isLight
-   )
+   val isLight = !isSystemInDarkTheme()
+   val color = MaterialTheme.colors.surface
+   DisposableEffect(this, isLight) {
+      setSystemBarsColor(
+         color = color,
+         darkIcons = isLight
+      )
+      onDispose {}
+   }
 }
 
 @Composable
