@@ -1,11 +1,16 @@
 package com.syalim.edufundtest.ui.screens.home.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
@@ -18,6 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.google.accompanist.pager.*
 import com.syalim.edufundtest.R
+import com.syalim.edufundtest.domain.model.StatsRegional
+import com.syalim.edufundtest.ui.common.millisToStringDate
+import com.syalim.edufundtest.ui.common.toStringNominal
 import com.syalim.edufundtest.ui.theme.dimenExtraSmall
 import com.syalim.edufundtest.ui.theme.dimenRegular
 import com.syalim.edufundtest.ui.theme.dimenSmall
@@ -32,17 +40,19 @@ import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun StatsListAutoSlide() {
+fun StatsListAutoSlide(
+   data: List<StatsRegional>
+) {
    val pagerState = rememberPagerState(0)
    Column(modifier = Modifier.fillMaxWidth()) {
       HorizontalPager(
          state = pagerState,
-         count = 20,
+         count = data.size,
          contentPadding = PaddingValues(dimenRegular),
          itemSpacing = dimenRegular,
          modifier = Modifier.fillMaxWidth()
       ) { page ->
-         StatsListItem(page)
+         StatsListItem(data[page], page)
       }
       HorizontalPagerIndicator(
          pagerState = pagerState,
@@ -66,7 +76,10 @@ fun StatsListAutoSlide() {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun PagerScope.StatsListItem(page: Int) {
+fun PagerScope.StatsListItem(
+   statsRegional: StatsRegional,
+   page: Int
+) {
    Card(
       modifier = Modifier
          .graphicsLayer {
@@ -76,43 +89,58 @@ fun PagerScope.StatsListItem(page: Int) {
       Column(
          modifier = Modifier
             .fillMaxWidth()
+            .background(
+               Brush.verticalGradient(
+                  listOf(
+                     MaterialTheme.colors.background,
+                     MaterialTheme.colors.surface
+                  )
+               )
+            )
             .padding(dimenRegular),
          horizontalAlignment = Alignment.CenterHorizontally,
          verticalArrangement = Arrangement.spacedBy(dimenRegular)
       ) {
-         Row(modifier = Modifier.fillMaxWidth()) {
+         Column(
+            modifier = Modifier
+               .fillMaxWidth()
+               .padding(dimenRegular),
+            horizontalAlignment = Alignment.CenterHorizontally
+         ) {
             Text(
-               text = "DKI Jakarta",
-               style = MaterialTheme.typography.body1,
-               fontWeight = FontWeight.Bold,
-               modifier = Modifier.weight(1f)
+               text = statsRegional.province,
+               style = MaterialTheme.typography.h6,
+               fontWeight = FontWeight.Bold
             )
             Text(
-               text = "1 Oct 2022",
-               style = MaterialTheme.typography.caption,
+               text = buildString {
+                  append("(")
+                  append(statsRegional.timestamp.millisToStringDate())
+                  append(")")
+               },
+               style = MaterialTheme.typography.body2,
                fontStyle = FontStyle.Italic
             )
          }
-         Divider()
          Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(dimenRegular)
          ) {
             StatsData(
                title = stringResource(id = R.string.infected),
-               value = "1424400",
+               value = statsRegional.infected.toStringNominal(),
                image = painterResource(id = R.drawable.ic_virus),
                imageColor = Color.Red
             )
             StatsData(
                title = stringResource(id = R.string.recovered),
-               value = "1401161",
+               value = statsRegional.recovered.toStringNominal(),
                image = painterResource(id = R.drawable.ic_healing),
                imageColor = Color.Green
             )
             StatsData(
                title = stringResource(id = R.string.fatal),
-               value = "15556",
+               value = statsRegional.fatal.toStringNominal(),
                image = painterResource(id = R.drawable.ic_skull),
                imageColor = Color.Gray
             )
@@ -131,9 +159,9 @@ fun RowScope.StatsData(
    Column(
       modifier = Modifier
          .weight(1f)
-         .aspectRatio(1f),
+         .padding(vertical = dimenRegular),
       horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.SpaceEvenly
+      verticalArrangement = Arrangement.spacedBy(dimenSmall)
    ) {
       Icon(
          painter = image,
@@ -148,7 +176,7 @@ fun RowScope.StatsData(
       )
       Text(
          text = value,
-         style = MaterialTheme.typography.body1
+         style = MaterialTheme.typography.subtitle1
       )
    }
 }

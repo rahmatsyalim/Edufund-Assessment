@@ -72,9 +72,10 @@ fun SearchHospitalScreen(
             } else {
                SearchHospitalList(data = data)
             }
-         }
-         searchResult.error?.let {
-            TextNoData(text = stringResource(id = R.string.something_went_wrong))
+         } ?: kotlin.run {
+            searchResult.error?.let {
+               TextNoData(text = stringResource(id = R.string.something_went_wrong))
+            }
          }
       }
    }

@@ -35,7 +35,10 @@ class SearchHospitalViewModel @Inject constructor(
             _searchHospitalUiState.update {
                when (result) {
                   is Resource.Success -> SearchHospitalUiState(data = result.data)
-                  is Resource.Failure -> SearchHospitalUiState(error = result.cause)
+                  is Resource.Failure -> SearchHospitalUiState(
+                     error = result.cause,
+                     data = result.data
+                  )
                }
             }
          }.onStart {

@@ -1,6 +1,7 @@
 package com.syalim.edufundtest.data.source.remote.api
 
 import com.syalim.edufundtest.data.source.remote.dto.HospitalDto
+import com.syalim.edufundtest.data.source.remote.dto.StatsDto
 import retrofit2.http.GET
 
 
@@ -13,5 +14,8 @@ interface DekontaminasiApi {
 
    @GET("api/id/covid19/hospitals")
    suspend fun getHospitals(): List<HospitalDto>
+
+   @GET("api/id/covid19/stats")
+   suspend fun getStats(): StatsDto
 
 }

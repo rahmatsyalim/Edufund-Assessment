@@ -1,10 +1,12 @@
 package com.syalim.edufundtest.data.source.local.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.syalim.edufundtest.data.source.local.entity.HospitalEntity
+import com.syalim.edufundtest.data.source.local.entity.StatsRegionalEntity
 
 
 /**
@@ -18,9 +20,22 @@ interface DekontaminasiDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
    suspend fun insertHospitals(data: List<HospitalEntity>)
 
+   @Query("DELETE FROM hospitals")
+   suspend fun clearHospitals()
+
    @Query("SELECT (SELECT COUNT(*) FROM hospitals) == 0")
    suspend fun isHospitalsEmpty(): Boolean
 
    @Query("SELECT * FROM hospitals WHERE name LIKE '%' || :query || '%' LIMIT 10")
    suspend fun searchHospitals(query: String): List<HospitalEntity>
+
+   @Insert(onConflict = OnConflictStrategy.REPLACE)
+   suspend fun insertStatsRegional(data: List<StatsRegionalEntity>)
+
+   @Query("SELECT * FROM stats_regional")
+   suspend fun getStatsRegional(): List<StatsRegionalEntity>
+
+   @Query("DELETE FROM stats_regional")
+   suspend fun clearStatsRegional()
+
 }

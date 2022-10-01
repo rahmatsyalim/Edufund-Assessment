@@ -1,21 +1,20 @@
 package com.syalim.edufundtest.ui.screens.home
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.syalim.edufundtest.R
-import com.syalim.edufundtest.ui.common.AppThemeHelper
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.syalim.edufundtest.ui.common.components.TripleCircleLoadingBar
 import com.syalim.edufundtest.ui.screens.home.components.StatsListAutoSlide
+import com.syalim.edufundtest.ui.theme.dimenRegular
 
 
 /**
@@ -24,37 +23,24 @@ import com.syalim.edufundtest.ui.screens.home.components.StatsListAutoSlide
  */
 
 @Composable
-fun HomeScreen() {
-   Scaffold(
-      topBar = {
-         TopAppBar(
-            backgroundColor = MaterialTheme.colors.surface,
-            contentPadding = PaddingValues(0.dp)
-         ) {
-            Text(
-               modifier = Modifier.fillMaxWidth(),
-               text = stringResource(id = R.string.home),
-               textAlign = TextAlign.Center,
-               style = MaterialTheme.typography.subtitle1
-            )
-         }
+fun HomeScreen(
+   viewModel: HomeViewModel = hiltViewModel()
+) {
+   val homeUiState by viewModel.homeUiState.collectAsState()
+   Column(
+      modifier = Modifier
+         .fillMaxSize()
+         .verticalScroll(rememberScrollState())
+   ) {
+      AnimatedVisibility(visible = homeUiState.isLoading) {
+         TripleCircleLoadingBar(
+            modifier = Modifier
+               .fillMaxWidth()
+               .padding(top = dimenRegular)
+         )
       }
-   ) { paddingValues ->
-      Column(
-         modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-            .verticalScroll(rememberScrollState())
-      ) {
-         StatsListAutoSlide()
+      homeUiState.statsRegionalData?.let { data ->
+         StatsListAutoSlide(data = data)
       }
-   }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-   AppThemeHelper {
-      HomeScreen()
    }
 }

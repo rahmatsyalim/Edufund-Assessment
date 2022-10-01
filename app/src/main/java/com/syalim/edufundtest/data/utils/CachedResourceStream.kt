@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -17,50 +16,21 @@ inline fun <REMOTE, LOCAL, DOMAIN> cachedResourceStream(
    crossinline fetchLocal: suspend () -> LOCAL,
    crossinline fetchRemote: suspend () -> REMOTE,
    crossinline cacheData: suspend REMOTE.() -> Unit,
-   crossinline isNoData: suspend LOCAL.() -> Boolean,
-   crossinline lastCachedTime: LOCAL.() -> Long?,
-   crossinline mapToResult: LOCAL.() -> DOMAIN
+   crossinline mapToResult: LOCAL.() -> DOMAIN,
+   crossinline shouldUpdate: suspend LOCAL.() -> Boolean
 ): Flow<Resource<DOMAIN>> = flow {
-   val timeNow = System.currentTimeMillis()
-   val expired = TimeUnit.MINUTES.toMillis(60L)
    val cached = fetchLocal.invoke()
-   val shouldUpdate = lastCachedTime(cached)?.let { timeNow - it > expired } == true
-   if (isNoData(cached) || shouldUpdate) {
+   if (shouldUpdate(cached)) {
+      val cachedNotEmpty = cached is List<*> && cached.isNotEmpty()
       try {
          cacheData.invoke(fetchRemote.invoke())
          emit(Resource.Success(fetchLocal.invoke().mapToResult()))
       } catch (e: HttpException) {
-         emit(Resource.Failure(cause = e, data = if (shouldUpdate) cached.mapToResult() else null))
+         emit(Resource.Failure(cause = e, data = if (cachedNotEmpty) cached.mapToResult() else null))
       } catch (e: IOException) {
-         emit(Resource.Failure(cause = e, data = if (shouldUpdate) cached.mapToResult() else null))
+         emit(Resource.Failure(cause = e, data = if (cachedNotEmpty) cached.mapToResult() else null))
       }
    } else {
       emit(Resource.Success(data = cached.mapToResult()))
-   }
-}
-
-suspend inline fun <REMOTE, LOCAL, DOMAIN> cachedResource(
-   crossinline fetchLocal: suspend () -> LOCAL,
-   crossinline fetchRemote: suspend () -> REMOTE,
-   crossinline cacheData: suspend REMOTE.() -> Unit,
-   crossinline isNoData: suspend LOCAL.() -> Boolean,
-   crossinline lastCachedTime: LOCAL.() -> Long?,
-   crossinline mapToResult: LOCAL.() -> DOMAIN
-): DOMAIN {
-   val timeNow = System.currentTimeMillis()
-   val expired = TimeUnit.MINUTES.toMillis(60L)
-   val cached = fetchLocal.invoke()
-   val shouldUpdate = lastCachedTime(cached)?.let { timeNow - it > expired } == true
-   return if (isNoData(cached) || shouldUpdate) {
-      try {
-         cacheData.invoke(fetchRemote.invoke())
-         fetchLocal.invoke().mapToResult()
-      } catch (e: HttpException) {
-         throw e
-      } catch (e: IOException) {
-         throw e
-      }
-   } else {
-      cached.mapToResult()
    }
 }
