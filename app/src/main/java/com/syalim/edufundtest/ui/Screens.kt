@@ -8,4 +8,5 @@ package com.syalim.edufundtest.ui
 
 sealed class Screens(val route: String) {
    object Main : Screens(route = "main_screen")
+   object News : Screens(route = "news_screen")
 }
