@@ -1,11 +1,11 @@
 package com.syalim.edufundtest.data.source.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.syalim.edufundtest.data.source.local.entity.HospitalEntity
+import com.syalim.edufundtest.data.source.local.entity.NewsEntity
 import com.syalim.edufundtest.data.source.local.entity.StatsRegionalEntity
 
 
@@ -37,5 +37,14 @@ interface DekontaminasiDao {
 
    @Query("DELETE FROM stats_regional")
    suspend fun clearStatsRegional()
+
+   @Insert(onConflict = OnConflictStrategy.REPLACE)
+   suspend fun insertNews(data: List<NewsEntity>)
+
+   @Query("SELECT * FROM news")
+   suspend fun getNews(): List<NewsEntity>
+
+   @Query("DELETE FROM news")
+   suspend fun clearNews()
 
 }

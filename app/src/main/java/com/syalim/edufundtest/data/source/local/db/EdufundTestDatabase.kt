@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.syalim.edufundtest.data.source.local.dao.DekontaminasiDao
 import com.syalim.edufundtest.data.source.local.entity.HospitalEntity
+import com.syalim.edufundtest.data.source.local.entity.NewsEntity
 import com.syalim.edufundtest.data.source.local.entity.StatsRegionalEntity
 
 
@@ -15,7 +16,8 @@ import com.syalim.edufundtest.data.source.local.entity.StatsRegionalEntity
 @Database(
    entities = [
       HospitalEntity::class,
-      StatsRegionalEntity::class
+      StatsRegionalEntity::class,
+      NewsEntity::class
    ],
    version = 1,
    exportSchema = false

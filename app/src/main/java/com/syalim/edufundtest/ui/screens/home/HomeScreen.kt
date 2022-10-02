@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.syalim.edufundtest.R
-import com.syalim.edufundtest.domain.model.News
 import com.syalim.edufundtest.ui.common.components.CustomSwipeRefresh
 import com.syalim.edufundtest.ui.common.components.TripleCircleLoadingBar
 import com.syalim.edufundtest.ui.screens.home.components.NewsListItem
@@ -57,24 +56,26 @@ fun HomeScreen(
                         .padding(top = dimenRegular)
                   )
                }
-               homeUiState.statsRegionalData?.let { data ->
+               homeUiState.statsRegionalData?.let { statsData ->
                   StatsListAutoSlide(
                      modifier = Modifier.fillMaxWidth(),
-                     data = data
+                     data = statsData
                   )
                }
             }
          }
-         item {
-            Text(
-               modifier = Modifier.padding(horizontal = dimenRegular),
-               text = stringResource(id = R.string.news),
-               style = MaterialTheme.typography.subtitle1
-            )
-         }
-         items(items = emptyList<News>()) { item ->
-            NewsListItem(news = item) {
-               onNavigateToNews.invoke(it)
+         homeUiState.newsData?.let { newsData ->
+            item {
+               Text(
+                  modifier = Modifier.padding(horizontal = dimenRegular),
+                  text = stringResource(id = R.string.news),
+                  style = MaterialTheme.typography.subtitle1
+               )
+            }
+            items(items = newsData) { item ->
+               NewsListItem(news = item) {
+                  onNavigateToNews.invoke(it)
+               }
             }
          }
       }

@@ -1,8 +1,10 @@
 package com.syalim.edufundtest.data.mapper
 
 import com.syalim.edufundtest.data.source.local.entity.HospitalEntity
+import com.syalim.edufundtest.data.source.local.entity.NewsEntity
 import com.syalim.edufundtest.data.source.local.entity.StatsRegionalEntity
 import com.syalim.edufundtest.domain.model.Hospital
+import com.syalim.edufundtest.domain.model.News
 import com.syalim.edufundtest.domain.model.StatsRegional
 
 
@@ -27,6 +29,14 @@ fun StatsRegionalEntity.asDomainModel(): StatsRegional {
       infected = infected,
       recovered = recovered,
       fatal = fatal,
+      timestamp = timestamp
+   )
+}
+
+fun NewsEntity.asDomainModel(): News {
+   return News(
+      title = title,
+      url = url,
       timestamp = timestamp
    )
 }

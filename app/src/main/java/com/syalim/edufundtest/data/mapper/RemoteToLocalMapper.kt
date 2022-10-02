@@ -1,8 +1,10 @@
 package com.syalim.edufundtest.data.mapper
 
 import com.syalim.edufundtest.data.source.local.entity.HospitalEntity
+import com.syalim.edufundtest.data.source.local.entity.NewsEntity
 import com.syalim.edufundtest.data.source.local.entity.StatsRegionalEntity
 import com.syalim.edufundtest.data.source.remote.dto.HospitalDto
+import com.syalim.edufundtest.data.source.remote.dto.NewsDto
 import com.syalim.edufundtest.data.source.remote.dto.StatsRegionalDto
 
 
@@ -27,6 +29,14 @@ fun StatsRegionalDto.asLocalModel(timestamp: Long): StatsRegionalEntity {
       infected = numbers.infected,
       recovered = numbers.recovered,
       fatal = numbers.fatal,
+      timestamp = timestamp
+   )
+}
+
+fun NewsDto.asLocalModel(): NewsEntity {
+   return NewsEntity(
+      title = title,
+      url = url,
       timestamp = timestamp
    )
 }

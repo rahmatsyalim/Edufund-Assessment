@@ -7,6 +7,7 @@ import com.syalim.edufundtest.data.source.local.dao.DekontaminasiDao
 import com.syalim.edufundtest.data.source.remote.api.DekontaminasiApi
 import com.syalim.edufundtest.data.utils.cachedResourceStream
 import com.syalim.edufundtest.domain.model.Hospital
+import com.syalim.edufundtest.domain.model.News
 import com.syalim.edufundtest.domain.model.StatsRegional
 import com.syalim.edufundtest.domain.repository.DekontaminasiRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -52,6 +53,19 @@ class DekontaminasiRepositoryImpl(
          cacheData = {
             localDataSource.clearStatsRegional()
             localDataSource.insertStatsRegional(regions.map { it.asLocalModel(timestamp) })
+         },
+         mapToResult = { map { it.asDomainModel() } },
+         shouldUpdate = { true }
+      )
+   }
+
+   override fun getNews(): Flow<Resource<List<News>>> {
+      return cachedResourceStream(
+         fetchLocal = localDataSource::getNews,
+         fetchRemote = remoteDataSource::getNews,
+         cacheData = {
+            localDataSource.clearNews()
+            localDataSource.insertNews(map { it.asLocalModel() })
          },
          mapToResult = { map { it.asDomainModel() } },
          shouldUpdate = { true }

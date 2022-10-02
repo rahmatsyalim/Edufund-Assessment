@@ -1,5 +1,6 @@
 package com.syalim.edufundtest.ui.screens.home
 
+import com.syalim.edufundtest.domain.model.News
 import com.syalim.edufundtest.domain.model.StatsRegional
 
 
@@ -12,5 +13,6 @@ data class HomeUiState(
    val isRefreshing: Boolean = false,
    val isLoading: Boolean = false,
    val error: Throwable? = null,
-   val statsRegionalData: List<StatsRegional>? = null
+   val statsRegionalData: List<StatsRegional>? = null,
+   val newsData: List<News>? = null
 )

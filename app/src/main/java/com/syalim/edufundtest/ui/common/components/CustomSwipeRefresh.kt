@@ -1,8 +1,6 @@
 package com.syalim.edufundtest.ui.common.components
 
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -32,7 +30,6 @@ import kotlin.math.roundToInt
  * rahmatsyalim@gmail.com
  */
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CustomSwipeRefresh(
    modifier: Modifier = Modifier,
@@ -51,54 +48,50 @@ fun CustomSwipeRefresh(
    val trigger = remember { refreshTriggerHeight }
    val triggerPx = remember { with(density) { trigger.toPx() } }
 
-   CompositionLocalProvider(
-      LocalOverscrollConfiguration provides null
-   ) {
-      SwipeRefresh(
-         modifier = modifier,
-         state = pullState,
-         onRefresh = onRefresh,
-         refreshTriggerDistance = trigger,
-         indicator = { state, _ ->
-            val willRefresh = state.indicatorOffset.roundToInt() > triggerPx
-            offset = state.indicatorOffset.roundToInt() + if (willRefresh) 100 else 0
-            offset = when {
-               willRefresh -> triggerPx.roundToInt() + (state.indicatorOffset.roundToInt() * .1f).roundToInt()
-               state.isRefreshing -> triggerPx.roundToInt()
-               else -> state.indicatorOffset.roundToInt()
-            }
+   SwipeRefresh(
+      modifier = modifier,
+      state = pullState,
+      onRefresh = onRefresh,
+      refreshTriggerDistance = trigger,
+      indicator = { state, _ ->
+         val willRefresh = state.indicatorOffset.roundToInt() > triggerPx
+         offset = state.indicatorOffset.roundToInt() + if (willRefresh) 100 else 0
+         offset = when {
+            willRefresh -> triggerPx.roundToInt() + (state.indicatorOffset.roundToInt() * .1f).roundToInt()
+            state.isRefreshing -> triggerPx.roundToInt()
+            else -> state.indicatorOffset.roundToInt()
          }
-      ) {
-         Box {
-            Box(
-               modifier = Modifier
-                  .fillMaxWidth()
-                  .height(trigger),
-               contentAlignment = Alignment.Center
-            ) {
-               CircleWithRingLoadingBar(
-                  modifier = Modifier.size(20.dp),
-                  isRefreshing = pullState.isRefreshing,
-                  willRefresh = offset > triggerPx,
-                  offsetProgress = min(animatedOffset / triggerPx, 1f),
-                  shape = RoundedCornerShape(5.dp),
-                  color = MaterialTheme.colors.primary
-               )
-            }
-            val scale by animateFloatAsState(
-               targetValue = if (offset > triggerPx) .95f else 1f,
-               animationSpec = spring(
-                  dampingRatio = Spring.DampingRatioMediumBouncy,
-               )
+      }
+   ) {
+      Box {
+         Box(
+            modifier = Modifier
+               .fillMaxWidth()
+               .height(trigger),
+            contentAlignment = Alignment.Center
+         ) {
+            CircleWithRingLoadingBar(
+               modifier = Modifier.size(20.dp),
+               isRefreshing = pullState.isRefreshing,
+               willRefresh = offset > triggerPx,
+               offsetProgress = min(animatedOffset / triggerPx, 1f),
+               shape = RoundedCornerShape(5.dp),
+               color = MaterialTheme.colors.primary
             )
-            Box(modifier = Modifier
-               .scale(scale)
-               .offset { IntOffset(x = 0, y = animatedOffset) }
-               .fillMaxSize()
-               .background(MaterialTheme.colors.background)
-            ) {
-               content()
-            }
+         }
+         val scale by animateFloatAsState(
+            targetValue = if (offset > triggerPx) .95f else 1f,
+            animationSpec = spring(
+               dampingRatio = Spring.DampingRatioMediumBouncy,
+            )
+         )
+         Box(modifier = Modifier
+            .scale(scale)
+            .offset { IntOffset(x = 0, y = animatedOffset) }
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+         ) {
+            content()
          }
       }
    }
