@@ -56,7 +56,7 @@ class DekontaminasiRepositoryImpl(
          },
          mapToResult = { map { it.asDomainModel() } },
          shouldUpdate = { true }
-      )
+      ).flowOn(ioDispatcher)
    }
 
    override fun getNews(): Flow<Resource<List<News>>> {
@@ -69,7 +69,7 @@ class DekontaminasiRepositoryImpl(
          },
          mapToResult = { map { it.asDomainModel() } },
          shouldUpdate = { true }
-      )
+      ).flowOn(ioDispatcher)
    }
 
 }

@@ -7,6 +7,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.syalim.edufundtest.ui.common.AppThemeHelper
 import com.syalim.edufundtest.ui.screens.main.components.BottomNavBar
@@ -19,7 +20,9 @@ import com.syalim.edufundtest.ui.screens.main.components.BottomNavBar
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
+fun MainScreen(
+   appNavController: NavHostController
+) {
    val navController = rememberNavController()
    Scaffold(
       bottomBar = {
@@ -27,6 +30,7 @@ fun MainScreen() {
       }
    ) { padding ->
       MainNavHost(
+         appNavController = appNavController,
          navController = navController,
          modifier = Modifier.padding(padding)
       )
@@ -38,6 +42,6 @@ fun MainScreen() {
 @Composable
 fun MainScreenPreview() {
    AppThemeHelper {
-      MainScreen()
+      MainScreen(rememberNavController())
    }
 }
