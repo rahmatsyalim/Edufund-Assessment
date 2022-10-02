@@ -25,8 +25,13 @@ android {
 
    buildTypes {
       getByName("release") {
-         isMinifyEnabled = false
+         isMinifyEnabled = true
          proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+         // temporary signing config
+         signingConfig = signingConfigs.getByName("debug")
+      }
+      getByName("debug") {
+         applicationIdSuffix = ".debug"
       }
    }
    compileOptions {
@@ -65,7 +70,6 @@ dependencies {
    implementation(libs.androidx.lifecycle.viewmodel.compose)
    implementation(libs.androidx.navigation.compose)
    implementation(libs.androidx.hilt.navigation.compose)
-   implementation(libs.androidx.paging.compose)
    implementation(libs.hilt.android)
    kapt(libs.hilt.android.compiler)
    implementation(libs.kotlinx.coroutines.android)
