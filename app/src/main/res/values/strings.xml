@@ -17,4 +17,5 @@
 
    <string name="no_hospital_found">No hospital found.</string>
    <string name="something_went_wrong">Oops, something went wrong.</string>
+   <string name="connection_failed">Oops, please check your internet connection.</string>
 </resources>

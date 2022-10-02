@@ -48,4 +48,8 @@ class SearchHospitalViewModel @Inject constructor(
       }
    }
 
+   fun errorShown() {
+      _searchHospitalUiState.update { it.copy(error = null) }
+   }
+
 }

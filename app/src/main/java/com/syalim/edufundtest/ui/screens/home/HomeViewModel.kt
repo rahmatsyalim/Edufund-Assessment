@@ -61,23 +61,12 @@ class HomeViewModel @Inject constructor(
             _homeUiState.update { it.copy(isLoading = true) }
          }.launchIn(viewModelScope)
 
-   private fun getStatsRegional() = getStatsRegionalUseCase.invoke()
-      .onEach { result ->
-         _homeUiState.update {
-            when (result) {
-               is Resource.Failure -> HomeUiState(
-                  error = result.cause,
-                  statsRegionalData = result.data
-               )
-               is Resource.Success -> HomeUiState(statsRegionalData = result.data)
-            }
-         }
-      }.onStart {
-         _homeUiState.update { it.copy(isLoading = true) }
-      }.launchIn(viewModelScope)
-
    fun refresh() {
       _homeUiState.update { it.copy(isRefreshing = true) }
       getHomeContents()
+   }
+
+   fun errorShown() {
+      _homeUiState.update { it.copy(error = null) }
    }
 }
