@@ -47,6 +47,7 @@ jobs:
         with:
           expose-version-name: 'true'
           expose-version-code: 'false'
+          path: app/build.gradle.kts
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
