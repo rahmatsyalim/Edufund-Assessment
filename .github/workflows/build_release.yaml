@@ -1,10 +1,6 @@
-name:
+name: Build Release
 
-on:
-  push:
-    branches:
-      - 'feature/**'
-  workflow_dispatch:
+on: workflow_dispatch
 
 jobs:
   lint_check_job:
@@ -39,10 +35,10 @@ jobs:
           cache: gradle
 
       - name: Build APK
-        run: ./gradlew assembleDebug
+        run: ./gradlew bundleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: app-name.apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: com.syalim.edufundtest.aab
+          path: app/build/outputs/bundle/release/**.aab
