@@ -20,13 +20,11 @@ jobs:
       - name: Get current date
         id: date
         run: |
-          echo "current=$(date +'%Y.%m.%d.%H.%M')" >> "GITHUB_OUTPUT"
+          echo "current=$(date +'%Y.%m.%d.%H.%M')" >> "$GITHUB_OUTPUT"
 
       - name: Upload lint report
         uses: actions/upload-artifact@v3
-        env:
-          CURRENT_DATE: ${{ steps.date.outputs.current }}
         with:
-          name: lint-report-$CURRENT_DATE.html
+          name: "lint-report-${{ steps.date.outputs.current }}.html"
           path: app/build/reports/lint-results-debug.html
 
