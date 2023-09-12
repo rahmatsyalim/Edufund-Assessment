@@ -3,22 +3,6 @@ name: Build Debug
 on: workflow_dispatch
 
 jobs:
-  lint_check_job:
-    name: Lint Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Run Lint Check
-        run: ./gradlew lintDebug
-
-      - name: Upload Lint Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: lint-report.html
-          path: app/build/reports/lint-results-debug.html
-
   assemble_job:
     needs: [ lint_check_job ]
     name: Generate Debug APK

@@ -5,6 +5,7 @@ on:
     types:
       - closed
     branches: [ master, development ]
+  workflow_dispatch:
 
 jobs:
   lint_check_job:
@@ -18,13 +19,14 @@ jobs:
         run: ./gradlew lintDebug
 
       - name: Get current date
-        id: date
+        id: params
         run: |
-          echo "current=$(date +'%Y.%m.%d.%H.%M')" >> "$GITHUB_OUTPUT"
+          echo "current_date=$(date +'%Y.%m.%d.%H.%M')" >> "$GITHUB_OUTPUT"
+          echo "version_name=$(${{github.workspace}}/gradlew -q getVersionName)" >> "$GITHUB_OUTPUT"
 
       - name: Upload lint report
         uses: actions/upload-artifact@v3
         with:
-          name: "lint-report-${{ steps.date.outputs.current }}.html"
+          name: "lint-report-v${{ steps.params.outputs.version_name }}-${{ steps.params.outputs.current_date }}.html"
           path: app/build/reports/lint-results-debug.html
 
