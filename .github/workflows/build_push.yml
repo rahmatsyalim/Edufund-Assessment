@@ -1,17 +1,10 @@
 name:
 
 on:
+  push:
+    branches:
+      - 'feature/**'
   workflow_dispatch:
-    inputs:
-      build_types:
-        description: Select build type
-        required: true
-        type: choice
-        default: Debug
-        options:
-          - Debug
-          - Release
-
 
 jobs:
   lint_check_job:
