@@ -37,8 +37,13 @@ jobs:
       - name: Build APK
         run: ./gradlew bundleRelease
 
+      - name: Get current date
+        id: date
+        run: |
+          echo "current=$(date +'%Y.%m.%d.%H.%M')" >> "$GITHUB_OUTPUT"
+
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: com.syalim.edufundtest.aab
+          name: "com.syalim.edufundtest-${{ steps.date.outputs.current }}.aab"
           path: app/build/outputs/bundle/release/**.aab
