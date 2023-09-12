@@ -18,13 +18,12 @@ jobs:
         run: ./gradlew lintDebug
 
       - name: Get current date
-        id: date
         run: |
-          echo "{date}={$(date +'%Y.%m.%d.%H.%M')}" >> $GITHUB_STATE
+          echo "date=$(date +'%Y.%m.%d.%H.%M')" >> "$GITHUB_ENV"
 
       - name: Upload lint report
         uses: actions/upload-artifact@v3
         with:
-          name: lint-report-${{ env.date }}.html
+          name: lint-report-${{ date }}.html
           path: app/build/reports/lint-results-debug.html
 
