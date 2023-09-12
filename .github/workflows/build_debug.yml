@@ -42,15 +42,13 @@ jobs:
         run: |
           echo "current=$(date +'%Y.%m.%d.%H.%M')" >> "$GITHUB_OUTPUT"
 
-      - name: Expose app version
-        uses: michpohl/android-expose-version-name-action@v1.0.0
-        with:
-          expose-version-name: 'true'
-          expose-version-code: 'false'
-          path: app/build.gradle.kts
+      - name: Get version name
+        id: version
+        run: |
+          echo "name=$(${{github.workspace}}/gradlew -q printVersionName)" >> "$GITHUB_OUTPUT"
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: "com.syalim.edufundtest.debug-v$ANDROID_VERSION_NAME-${{ steps.date.outputs.current }}.apk"
+          name: "com.syalim.edufundtest.debug-v${{ steps.version.outputs.name }}-${{ steps.date.outputs.current }}.apk"
           path: app/build/outputs/apk/debug/**.apk

@@ -90,3 +90,7 @@ dependencies {
    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
 }
+
+tasks.register("getVersionName") {
+   println("1.0.0")
+}
