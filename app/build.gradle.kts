@@ -6,6 +6,9 @@ plugins {
    kotlin("kapt")
 }
 
+val defVersionCode = 2
+val defVersionName = "1.0.1"
+
 android {
    namespace = "com.syalim.edufundtest"
    compileSdk = 33
@@ -14,8 +17,8 @@ android {
       applicationId = "com.syalim.edufundtest"
       minSdk = 21
       targetSdk = 33
-      versionCode = 1
-      versionName = "1.0"
+      versionCode = defVersionCode
+      versionName = defVersionName
 
       testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
       vectorDrawables {
@@ -92,5 +95,5 @@ dependencies {
 }
 
 tasks.register("getVersionName") {
-   println("1.0.0")
+   println(defVersionName)
 }
