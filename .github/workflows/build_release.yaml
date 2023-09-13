@@ -1,16 +1,14 @@
-name: Build Debug
+name: Build Release
 
-on: workflow_dispatch
-
-concurrency:
-  group: build_debug_${{ github.ref }}
-  cancel-in-progress: true
+on:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build:
-    name: Generate debug APK
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -30,20 +28,19 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Set APK name params
+      - name: Set bundle name params
         id: params
         run: |
-          echo "current_date=$(date +'%Y.%m.%d.%H.%M')" >> "$GITHUB_OUTPUT"
           echo "version_name=$(${{github.workspace}}/gradlew -q getVersionName)" >> "$GITHUB_OUTPUT"
 
-      - name: Build APK
-        run: ./gradlew assembleDebug
+      - name: Build bundle
+        run: ./gradlew bundleRelease
 
-      - name: Upload APK
+      - name: Upload Bundle
         uses: actions/upload-artifact@v3
         with:
-          name: "com.syalim.edufundtest.debug-v${{ steps.params.outputs.version_name }}-${{ steps.params.outputs.current_date }}.apk"
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: "com.syalim.edufundtest-v${{ steps.params.outputs.version_name }}.aab"
+          path: app/build/outputs/bundle/release/app-release.aab
 
       - name: Print disk space usage
         if: failure()
