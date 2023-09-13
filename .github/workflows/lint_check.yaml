@@ -2,31 +2,39 @@ name: Lint Check
 
 on:
   pull_request:
-    types:
-      - closed
     branches: [ master, development ]
+  push:
+    branches:
+      - 'feature_**'
+      - 'fix_**'
   workflow_dispatch:
 
+concurrency:
+  group: lint_check_${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  lint_check_job:
+  lint_check:
     name: Lint check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Copy ci-gradle.properties
+        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Setup gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Run lint
         run: ./gradlew lintDebug
-
-      - name: Get current date
-        id: params
-        run: |
-          echo "current_date=$(date +'%Y.%m.%d.%H.%M')" >> "$GITHUB_OUTPUT"
-          echo "version_name=$(${{github.workspace}}/gradlew -q getVersionName)" >> "$GITHUB_OUTPUT"
 
       - name: Upload lint report
         uses: actions/upload-artifact@v3
         with:
-          name: "lint-report-v${{ steps.params.outputs.version_name }}-${{ steps.params.outputs.current_date }}.html"
+          name: lint-report.html
           path: app/build/reports/lint-results-debug.html
-
