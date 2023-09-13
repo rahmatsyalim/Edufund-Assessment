@@ -60,7 +60,8 @@ jobs:
       - name: Upload
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          appId: ${{secrets.FIREBASE_APP_ID_DEV}}
+          appId: ${{ secrets.FIREBASE_APP_ID_DEV }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
           file: app-debug.apk
+          releaseNotes: ${{ github.head_ref }}
