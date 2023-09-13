@@ -11,6 +11,7 @@ concurrency:
 
 jobs:
   build:
+    name: Generate Debug APK
     if: startsWith(github.head_ref, 'feature/')
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -18,10 +19,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Validate gradle wrapper
+      - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Copy ci-gradle.properties
+      - name: Copy CI Gradle Properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
       - name: Setup JDK 11
@@ -33,29 +34,33 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Set APK name params
-        id: params
-        run: |
-          echo "current_date=$(date +'%Y.%m.%d.%H.%M')" >> "$GITHUB_OUTPUT"
-          echo "version_name=$(${{github.workspace}}/gradlew -q getVersionName)" >> "$GITHUB_OUTPUT"
-
-      - name: Build APK
+      - name: Assemble
         run: ./gradlew assembleDebug
 
-      - name: Upload artifact to Firebase App Distribution
+      - name: Upload to Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Print Disk Space Usage
+        if: failure()
+        run: df -h
+
+  upload:
+    needs: build
+    name: Upload to Firebase App Distribution
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: apk
+
+      - name: Upload
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{secrets.FIREBASE_APP_ID_DEV}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
-          file: app/build/outputs/apk/debug/app-debug.apk
-
-#      - name: Upload APK
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: "com.syalim.edufundtest.debug-v${{ steps.params.outputs.version_name }}-${{ steps.params.outputs.current_date }}.apk"
-#          path: app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Print disk space usage
-        if: failure()
-        run: df -h
+          file: app-debug.apk
