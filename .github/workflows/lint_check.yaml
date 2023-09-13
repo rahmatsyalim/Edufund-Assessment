@@ -2,11 +2,8 @@ name: Lint Check
 
 on:
   pull_request:
+    types: [ opened, reopened ]
     branches: [ master, development ]
-  push:
-    branches:
-      - 'feature_**'
-      - 'fix_**'
   workflow_dispatch:
 
 concurrency:
