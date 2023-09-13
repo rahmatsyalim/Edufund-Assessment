@@ -30,14 +30,14 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Build APK
-        run: ./gradlew assembleDebug
-
       - name: Set APK name params
         id: params
         run: |
           echo "current_date=$(date +'%Y.%m.%d.%H.%M')" >> "$GITHUB_OUTPUT"
           echo "version_name=$(${{github.workspace}}/gradlew -q getVersionName)" >> "$GITHUB_OUTPUT"
+
+      - name: Build APK
+        run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
