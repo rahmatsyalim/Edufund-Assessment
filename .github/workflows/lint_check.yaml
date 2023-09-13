@@ -3,11 +3,7 @@ name: Lint Check
 on:
   pull_request:
     types: [ opened, reopened ]
-    branches: [ master ]
-  push:
-    branches:
-      - 'feature/**'
-  workflow_dispatch:
+    branches: [ master, development ]
 
 concurrency:
   group: lint_check_${{ github.ref }}
