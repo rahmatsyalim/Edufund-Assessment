@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [ opened, reopened ]
     branches: [ master, development ]
+  push:
+    branches:
+      - 'feature/**'
   workflow_dispatch:
 
 concurrency:
