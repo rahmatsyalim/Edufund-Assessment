@@ -7,16 +7,17 @@ on:
 
 jobs:
   build:
+    name: Generate Release App
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Validate gradle wrapper
+      - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Copy ci-gradle.properties
+      - name: Copy CI Gradle Properties
         run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
 
       - name: Setup JDK 11
@@ -28,20 +29,46 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Set bundle name params
-        id: params
-        run: |
-          echo "version_name=$(${{github.workspace}}/gradlew -q getVersionName)" >> "$GITHUB_OUTPUT"
-
-      - name: Build bundle
+      - name: Build App
         run: ./gradlew bundleRelease
 
-      - name: Upload Bundle
+      - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: "com.syalim.edufundtest-v${{ steps.params.outputs.version_name }}.aab"
+          name: aab
           path: app/build/outputs/bundle/release/app-release.aab
 
-      - name: Print disk space usage
+      - name: Print Disk Space Usage
         if: failure()
         run: df -h
+
+  release:
+    needs: build
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: aab
+
+      - name: Create Release Draft
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: true
+          prerelease: false
+
+      - name: Upload Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: aab/app-release.aab
+          asset_name: app-release.aab
+          asset_content_type: application/zip

@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   build:
-    name: Generate Debug APK
+    name: Generate Debug App
     if: ${{ startsWith(github.head_ref, 'feature/') && github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -34,10 +34,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Assemble
+      - name: Build App
         run: ./gradlew assembleDebug
 
-      - name: Upload to Artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: apk
@@ -49,7 +49,7 @@ jobs:
 
   upload:
     needs: build
-    name: Upload to Firebase App Distribution
+    name: Upload to Firebase
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifact
