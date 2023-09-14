@@ -53,32 +53,22 @@ jobs:
           name: aab
 
       - name: Create Release Draft
-      - uses: ncipollo/release-action@v1
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: ${{ github.ref }}
-          tag: ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
           draft: true
-          artifacts: app-release.aab
-          artifactContentType: application/zip
-          allowUpdates: true
+          prerelease: false
 
-#      - name: Create Release Draft
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ github.ref }}
-#          release_name: ${{ github.ref }}
-#          draft: true
-#          prerelease: false
-#
-#      - name: Upload Asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: app-release.aab
-#          asset_name: app-release.aab
-#          asset_content_type: application/zip
+      - name: Upload Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app-release.aab
+          asset_name: app-release.aab
+          asset_content_type: application/zip
