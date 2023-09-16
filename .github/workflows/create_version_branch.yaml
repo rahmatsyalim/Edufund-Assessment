@@ -1,0 +1,35 @@
+name: Create Version Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      #      bump_version:
+      #        description: 'Bump Version'
+      #        required: true
+      #        default: 'Patch'
+      #        type: choice
+      #        options:
+      #          - Major
+      #          - Minor
+      #          - Patch
+      version_major:
+        description: Version Major
+        required: true
+      version_minor:
+        description: Version Minor
+        required: true
+      version_patch:
+        description: Version Patch
+        required: true
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Branch
+        uses: peterjgrainger/action-create-branch@v2.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: 'v${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}'
+          sha: '${{ github.event.pull_request.head.sha }}'
