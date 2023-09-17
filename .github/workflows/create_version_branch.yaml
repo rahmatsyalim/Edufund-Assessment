@@ -27,20 +27,20 @@ jobs:
           echo "current_major=$(jq -r '.version_major' app_version.json)"
           echo "current_minor=$(jq -r '.version_minor' app_version.json)"
           echo "current_patch=$(jq -r '.version_patch' app_version.json)"
-          if ["$bump_version" = "Major"]; then
-            echo "major=$((current_major + 1))" >> "$GITHUB_OUTPUT"
+          if ["$bump_version" -eq "Major"]; then
+            echo "major=${{ current_major + 1 }}" >> "$GITHUB_OUTPUT"
           else
-            echo "major=$(current_major)" >> "$GITHUB_OUTPUT"
+            echo "major=${{ current_major }}" >> "$GITHUB_OUTPUT"
           fi
-          if ["$bump_version" = "Minor"]; then
-            echo "minor=$((current_minor + 1))" >> "$GITHUB_OUTPUT"
+          if ["$bump_version" -eq "Minor"]; then
+            echo "minor=${{ current_minor + 1 }}" >> "$GITHUB_OUTPUT"
           else
-            echo "minor=$(current_minor)" >> "$GITHUB_OUTPUT"
+            echo "minor=${{ current_minor }}" >> "$GITHUB_OUTPUT"
           fi
-          if ["$bump_version" = "Patch"]; then
-            echo "major=$((current_patch + 1))" >> "$GITHUB_OUTPUT"
+          if ["$bump_version" -eq "Patch"]; then
+            echo "major=${{ current_patch + 1 }}" >> "$GITHUB_OUTPUT"
           else
-            echo "major=$(current_patch)" >> "$GITHUB_OUTPUT"
+            echo "major=${{ current_patch }}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create Branch
