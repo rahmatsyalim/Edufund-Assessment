@@ -54,17 +54,4 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "Bumped version to ${{ steps.new_version.outputs.name }}"
-          git push
-      # TODO: edit version file
-
-#      - name: Commit files
-#        run: |
-#          git config --local user.email "test@test.com"
-#          git config --local user.name "test"
-#          git commit -a -m "message"
-#          echo "version=" >> "$GITHUB_OUTPUT"
-#
-#      - name: Push changes
-#        uses: ad-m/github-push-action@master
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git push origin "${{ steps.new_version.outputs.name }}"
