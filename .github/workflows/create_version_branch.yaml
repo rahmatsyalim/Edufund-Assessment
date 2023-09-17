@@ -42,8 +42,8 @@ jobs:
       - name: Create Branch
         run: |
           branch_name="${{ steps.new_version.outputs.name }}"
-          git checkout -b branch_name
-          git push origin branch_name
+          git checkout -b "$branch_name"
+          git push origin "$branch_name"
 
 #      - name: Create Branch
 #        uses: peterjgrainger/action-create-branch@v2.2.0
