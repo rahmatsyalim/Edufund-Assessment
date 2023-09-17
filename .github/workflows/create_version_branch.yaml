@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup New Version
-        id: new version
+        id: new_version
         run: |
           bump_version="${{ inputs.bump_version }}"
           major=$(jq -r '.version.major' app_version.json)
@@ -40,7 +40,7 @@ jobs:
 
       - name: Create Branch
         run: |
-          echo "New Version: v${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}"
+          echo "New Version: v${{ steps.new_version.outputs.major }}.${{ steps.new_version.outputs.minor }}.${{ steps.new_version.outputs.patch }}"
 
 #      - name: Create Branch
 #        uses: peterjgrainger/action-create-branch@v2.2.0
