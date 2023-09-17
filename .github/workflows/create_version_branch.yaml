@@ -29,11 +29,9 @@ jobs:
           patch=$(jq -r '.version_patch' app_version.json)
           if [ "$bump_version" = "Major" ]; then
             major=$((major + 1))
-          fi
-          if [ "$bump_version" = "Minor" ]; then
+          elif [ "$bump_version" = "Minor" ]; then
             minor=$((minor + 1))
-          fi
-          if [ "$bump_version" = "Patch" ]; then
+          elif [ "$bump_version" = "Patch" ]; then
             patch=$((patch + 1))
           fi
           echo "major=$major"
