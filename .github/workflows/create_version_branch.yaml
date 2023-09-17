@@ -20,13 +20,13 @@ jobs:
       - name: Checkout Current Head
         uses: actions/checkout@v4
 
-      - name: Set Updated Version
-        id: version
+      - name: Setup New Version
+        id: new version
         run: |
           bump_version="${{ inputs.bump_version }}"
-          major=$(jq -r '.version_major' app_version.json)
-          minor=$(jq -r '.version_minor' app_version.json)
-          patch=$(jq -r '.version_patch' app_version.json)
+          major=$(jq -r '.version.major' app_version.json)
+          minor=$(jq -r '.version.minor' app_version.json)
+          patch=$(jq -r '.version.patch' app_version.json)
           if [ "$bump_version" = "Major" ]; then
             major=$((major + 1))
           elif [ "$bump_version" = "Minor" ]; then
@@ -34,9 +34,13 @@ jobs:
           elif [ "$bump_version" = "Patch" ]; then
             patch=$((patch + 1))
           fi
-          echo "major=$major"
-          echo "minor=$minor"
-          echo "patch=$patch"
+          echo "major=$major" >> "$GITHUB_OUTPUT"
+          echo "minor=$minor" >> "$GITHUB_OUTPUT"
+          echo "patch=$patch" >> "$GITHUB_OUTPUT"
+
+      - name: Create Branch
+        run: |
+          echo "New Version: v${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}"
 
 #      - name: Create Branch
 #        uses: peterjgrainger/action-create-branch@v2.2.0
