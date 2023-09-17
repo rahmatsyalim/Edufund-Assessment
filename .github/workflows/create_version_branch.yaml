@@ -28,8 +28,8 @@ jobs:
           current_minor=$(jq -r '.version_minor' app_version.json)
           current_patch=$(jq -r '.version_patch' app_version.json)
           if [ "$bump_version" = "Major" ]; then
-            incremented=$((current_major + 1))
-            echo "major=$incremented"
+#            incremented=$((current_major + 1))
+            echo "major=${{ current_major + 1 }}"
           else
             echo "major=$current_major"
           fi
