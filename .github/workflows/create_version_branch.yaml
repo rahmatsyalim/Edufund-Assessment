@@ -42,22 +42,19 @@ jobs:
       - name: Create Branch
         run: |
           branch_name="${{ steps.new_version.outputs.name }}"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git checkout -b "$branch_name"
           git push origin "$branch_name"
 
-#      - name: Create Branch
-#        uses: peterjgrainger/action-create-branch@v2.2.0
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          branch: 'v${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}'
-#          sha: '${{ github.event.pull_request.head.sha }}'
-
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#        with:
-#          ref: 'v${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}'
-
+      - name: Update app_version.json
+        run: |
+          jq '(.version.major = ${{ steps.new_version.outputs.major }}) | (.version.minor = ${{ steps.new_version.outputs.minor }}) | (.version.patch = ${{ steps.new_version.outputs.patch }})' app_version.json > app_version.json.tmp && mv app_version.json.tmp app_version.json
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Bumped version to ${{ steps.new_version.outputs.name }}"
+          git push
       # TODO: edit version file
 
 #      - name: Commit files
