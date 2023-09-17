@@ -37,10 +37,11 @@ jobs:
           echo "major=$major" >> "$GITHUB_OUTPUT"
           echo "minor=$minor" >> "$GITHUB_OUTPUT"
           echo "patch=$patch" >> "$GITHUB_OUTPUT"
+          echo "name=v$major.$minor.$patch" >> "$GITHUB_OUTPUT"
 
       - name: Create Branch
         run: |
-          echo "New Version: v${{ steps.new_version.outputs.major }}.${{ steps.new_version.outputs.minor }}.${{ steps.new_version.outputs.patch }}"
+          echo "New Version: ${{ steps.new_version.outputs.name }}"
 
 #      - name: Create Branch
 #        uses: peterjgrainger/action-create-branch@v2.2.0
