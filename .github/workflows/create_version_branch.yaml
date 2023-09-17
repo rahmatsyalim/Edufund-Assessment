@@ -48,6 +48,8 @@ jobs:
       - name: Update app_version.json
         run: |
           jq '(.version.major = ${{ steps.new_version.outputs.major }}) | (.version.minor = ${{ steps.new_version.outputs.minor }}) | (.version.patch = ${{ steps.new_version.outputs.patch }})' app_version.json > app_version.json.tmp && mv app_version.json.tmp app_version.json
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add .
           git commit -m "Bumped version to ${{ steps.new_version.outputs.name }}"
           git push origin "${{ steps.new_version.outputs.name }}"
