@@ -24,9 +24,9 @@ jobs:
         id: version
         run: |
           bump_version="${{ inputs.bump_version }}"
-          current_major=$(jq -r '.version.major' app_version.json)
-          current_minor=$(jq -r '.version.minor' app_version.json)
-          current_patch=$(jq -r '.version.patch' app_version.json)
+          current_major="$(jq -r '.version.major' app_version.json)"
+          current_minor="$(jq -r '.version.minor' app_version.json)"
+          current_patch="$(jq -r '.version.patch' app_version.json)"
           if ["$bump_version" = "Major"]; then
             echo "major=$((current_major + 1))" >> "$GITHUB_OUTPUT"
           else
