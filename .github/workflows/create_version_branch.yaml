@@ -3,33 +3,69 @@ name: Create Version Branch
 on:
   workflow_dispatch:
     inputs:
-      #      bump_version:
-      #        description: 'Bump Version'
-      #        required: true
-      #        default: 'Patch'
-      #        type: choice
-      #        options:
-      #          - Major
-      #          - Minor
-      #          - Patch
-      version_major:
-        description: Version Major
+      bump_version:
+        description: Bump Version
         required: true
-      version_minor:
-        description: Version Minor
-        required: true
-      version_patch:
-        description: Version Patch
-        required: true
+        default: Patch
+        type: choice
+        options:
+          - Major
+          - Minor
+          - Patch
 
 jobs:
   create:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Current Head
+        uses: actions/checkout@v4
+
+      - name: Set Updated Version
+        id: version
+        run: |
+          bump_version="${{ inputs.bump_version }}"
+          current_major=$(jq -r '.version.major' app_version.json)
+          current_minor=$(jq -r '.version.minor' app_version.json)
+          current_patch=$(jq -r '.version.patch' app_version.json)
+          if ["$bump_version" = "Major"]; then
+            echo "major=$((current_major + 1))" >> "$GITHUB_OUTPUT"
+          else
+            echo "major=$(current_major)" >> "$GITHUB_OUTPUT"
+          fi
+          if ["$bump_version" = "Minor"]; then
+            echo "minor=$((current_minor + 1))" >> "$GITHUB_OUTPUT"
+          else
+            echo "minor=$(current_minor)" >> "$GITHUB_OUTPUT"
+          fi
+          if ["$bump_version" = "Patch"]; then
+            echo "major=$((current_patch + 1))" >> "$GITHUB_OUTPUT"
+          else
+            echo "major=$(current_patch)" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Create Branch
         uses: peterjgrainger/action-create-branch@v2.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          branch: 'v${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}'
+          branch: 'v${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}'
           sha: '${{ github.event.pull_request.head.sha }}'
+
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          ref: 'v${{ inputs.version_major }}.${{ inputs.version_minor }}.${{ inputs.version_patch }}'
+
+      # TODO: edit version file
+
+#      - name: Commit files
+#        run: |
+#          git config --local user.email "test@test.com"
+#          git config --local user.name "test"
+#          git commit -a -m "message"
+#          echo "version=" >> "$GITHUB_OUTPUT"
+#
+#      - name: Push changes
+#        uses: ad-m/github-push-action@master
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
