@@ -20,7 +20,7 @@ jobs:
       - name: Checkout Current Head
         uses: actions/checkout@v4
 
-      - name: Setup New Version
+      - name: Generate New Version
         id: new_version
         run: |
           bump_version="${{ inputs.bump_version }}"
@@ -41,7 +41,9 @@ jobs:
 
       - name: Create Branch
         run: |
-          echo "New Version: ${{ steps.new_version.outputs.name }}"
+          branch_name="${{ steps.new_version.outputs.name }}"
+          git checkout -b branch_name
+          git push origin branch_name
 
 #      - name: Create Branch
 #        uses: peterjgrainger/action-create-branch@v2.2.0
