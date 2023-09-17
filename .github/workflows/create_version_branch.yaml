@@ -37,8 +37,8 @@ jobs:
             patch=$((patch + 1))
           fi
           echo "major=$major"
-          echo "minor=minor"
-          echo "patch=patch"
+          echo "minor=$minor"
+          echo "patch=$patch"
 
 #      - name: Create Branch
 #        uses: peterjgrainger/action-create-branch@v2.2.0
