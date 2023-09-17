@@ -23,11 +23,11 @@ jobs:
       - name: Set Updated Version
         id: version
         run: |
-          bump_version=${{ inputs.bump_version }}
+          bump_version="${{ inputs.bump_version }}"
           current_major=$(jq -r '.version_major' app_version.json)
           current_minor=$(jq -r '.version_minor' app_version.json)
           current_patch=$(jq -r '.version_patch' app_version.json)
-          if ["$bump_version" -eq "Major"]; then
+          if [ "$bump_version" = "Major" ]; then
             incremented=$((current_major + 1))
             echo "major=$incremented"
           else
