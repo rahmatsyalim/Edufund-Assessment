@@ -1,8 +1,9 @@
 name: Build Release
 
 on:
-  workflow_dispatch:
-    branches: [ master ]
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   build:
@@ -42,20 +43,6 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Create Tag
-        run: |
-          major=$(jq -r '.version.major' app_version.json)
-          minor=$(jq -r '.version.minor' app_version.json)
-          patch=$(jq -r '.version.patch' app_version.json)
-          version_name=v$major.$minor.$patch
-          git config user.name github-actions
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a "$version_name" -m "Release $version_name"
-          git push origin tag "$version_name"
-
       - name: Download Artifact
         uses: actions/download-artifact@v3
         with:
