@@ -1,11 +1,11 @@
 name: Build Release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
+    branches: [ master ]
 
 jobs:
+
   build:
     name: Generate Release App
     runs-on: ubuntu-latest
@@ -38,10 +38,6 @@ jobs:
           name: aab
           path: app/build/outputs/bundle/release/app-release.aab
 
-      - name: Print Disk Space Usage
-        if: failure()
-        run: df -h
-
   release:
     needs: build
     name: Create Release
@@ -53,22 +49,9 @@ jobs:
           name: aab
 
       - name: Create Release Draft
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
           draft: true
           prerelease: false
-
-      - name: Upload Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: app-release.aab
-          asset_name: app-release.aab
-          asset_content_type: application/zip
+          fail_on_unmatched_files: true
+          files: app-release.aab
