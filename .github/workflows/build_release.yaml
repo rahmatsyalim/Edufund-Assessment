@@ -18,7 +18,7 @@ jobs:
           patch=$(jq -r '.version.patch' app_version.json)
           version_name=v$major.$minor.$patch
           git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag -a "$version_name" -m "Release $version_name"
           git push origin tag "$version_name"
 
