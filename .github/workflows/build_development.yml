@@ -68,9 +68,12 @@ jobs:
 
       - name: Upload to Firebase App Distribution
         run: |
-          firebase appdistribution:distribute $FILE --app $APP_ID --groups $GROUP --release-name "$RELEASE_NAME"
+          firebase appdistribution:distribute $FILE \
+          --app $APP_ID \
+          --groups $GROUP \
+          --release-notes "$RELEASE_NOTES"
         env:
           FILE: app-debug.apk
           APP_ID: ${{ secrets.FIREBASE_APP_ID_DEV }}
           GROUP: testers
-          RELEASE_NAME: ${{ github.head_ref }}
+          RELEASE_NOTES: ${{ github.head_ref }}
