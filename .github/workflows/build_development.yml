@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 90
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
@@ -50,18 +50,31 @@ jobs:
   upload:
     needs: build
     name: Upload to Firebase
-    runs-on: ubuntu-latest
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@v3
         with:
           name: apk
 
-      - name: Upload
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.FIREBASE_APP_ID_DEV }}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: testers
-          file: app-debug.apk
-          releaseNotes: ${{ github.head_ref }}
+      - name: Setup Node
+        uses: actions/setup-node@v3
+
+      - name: Setup Firebase CLI
+        run: |
+          npm install -g firebase-tools
+          echo "$FIREBASE_SA" > firebase-service-account.json
+          firebase login --no-localhost --service-account firebase-service-account.json
+        env:
+          FIREBASE_SA: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+
+      - name: Upload to Firebase App Distribution
+        run: |
+          firebase appdistribution:distribute $FILE \
+            --app $APP_ID \
+            --groups $GROUP \
+            --release-name "$RELEASE_NAME" \
+        env:
+          FILE: app-debug.apk
+          APP_ID: ${{ secrets.FIREBASE_APP_ID_DEV }}
+          GROUP: testers
+          RELEASE_NAME: ${{ github.head_ref }}
