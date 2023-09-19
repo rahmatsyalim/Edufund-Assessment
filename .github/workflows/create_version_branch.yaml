@@ -2,6 +2,7 @@ name: Create Version Branch
 
 on:
   workflow_dispatch:
+    branches: [ master ]
     inputs:
       bump_version:
         description: Bump Version
@@ -17,7 +18,7 @@ jobs:
   create:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Current Head
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Generate New Version
@@ -41,15 +42,11 @@ jobs:
 
       - name: Create Branch
         run: |
-          branch_name="${{ steps.new_version.outputs.name }}"
-          git checkout -b "$branch_name"
-          git push origin "$branch_name"
-
-      - name: Update app_version.json
-        run: |
-          jq '(.version.major = ${{ steps.new_version.outputs.major }}) | (.version.minor = ${{ steps.new_version.outputs.minor }}) | (.version.patch = ${{ steps.new_version.outputs.patch }})' app_version.json > app_version.json.tmp && mv app_version.json.tmp app_version.json
+          version_name="${{ steps.new_version.outputs.name }}"
           git config user.name github-actions
           git config user.email github-actions@github.com
+          git checkout -b "$version_name"
+          jq '(.version.major = ${{ steps.new_version.outputs.major }}) | (.version.minor = ${{ steps.new_version.outputs.minor }}) | (.version.patch = ${{ steps.new_version.outputs.patch }})' app_version.json > app_version.json.tmp && mv app_version.json.tmp app_version.json
           git add .
-          git commit -m "Bumped version to ${{ steps.new_version.outputs.name }}"
-          git push origin "${{ steps.new_version.outputs.name }}"
+          git commit -m "Bumped version to $version_name"
+          git push origin "$version_name"
