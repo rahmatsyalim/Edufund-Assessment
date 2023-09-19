@@ -64,9 +64,7 @@ jobs:
         run: |
           npm install -g firebase-tools
           echo "${{ secrets.CREDENTIAL_FILE_CONTENT }}" > firebase-service-account.json
-          firebase login:ci --interactive --no-localhost < firebase-service-account.json
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          export GOOGLE_APPLICATION_CREDENTIALS=firebase-service-account.json
 
       - name: Upload to Firebase App Distribution
         run: |
@@ -76,4 +74,3 @@ jobs:
           APP_ID: ${{ secrets.FIREBASE_APP_ID_DEV }}
           GROUP: testers
           RELEASE_NAME: ${{ github.head_ref }}
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
