@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build Apps
+    name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:

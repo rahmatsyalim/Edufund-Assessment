@@ -44,7 +44,7 @@ jobs:
         run: |
           version_name="${{ steps.new_version.outputs.name }}"
           git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git checkout -b "$version_name"
           jq '(.version.major = ${{ steps.new_version.outputs.major }}) | (.version.minor = ${{ steps.new_version.outputs.minor }}) | (.version.patch = ${{ steps.new_version.outputs.patch }})' app_version.json > app_version.json.tmp && mv app_version.json.tmp app_version.json
           git add .
