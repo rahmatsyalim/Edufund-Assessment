@@ -66,10 +66,10 @@ jobs:
 
       - name: Push Tag
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a ${{ steps.tag.outputs.name }}
-          git push origin ${{ steps.tag.outputs.name }}
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag ${{ steps.tag.outputs.name }}
+          git push origin tag ${{ steps.tag.outputs.name }}
 
   create-release:
     needs: [ create-tag ]
