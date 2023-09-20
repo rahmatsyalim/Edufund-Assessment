@@ -26,29 +26,31 @@ jobs:
         run: |
           props=$(cat app-version.properties)
           version_major=$(echo "$props" | grep -E "version_major=" | cut -d'=' -f2)
-          version_minor=$(echo "$props" | grep -E "version_major=" | cut -d'=' -f2)
-          version_patch=$(echo "$props" | grep -E "version_major=" | cut -d'=' -f2)
+          version_minor=$(echo "$props" | grep -E "version_minor=" | cut -d'=' -f2)
+          version_patch=$(echo "$props" | grep -E "version_patch=" | cut -d'=' -f2)
           
-          echo "$version_major.$version_minor.$version_patch"
+          echo "major=$version_major" >> "$GITHUB_OUTPUT"
+          echo "minor=$version_minor" >> "$GITHUB_OUTPUT"
+          echo "patch=$version_patch" >> "$GITHUB_OUTPUT"
 
-#      - name: Generate New Version
-#        id: new_version
-#        run: |
-#          bump_version="${{ inputs.bump_version }}"
-#          major=$(jq -r '.version.major' app_version.json)
-#          minor=$(jq -r '.version.minor' app_version.json)
-#          patch=$(jq -r '.version.patch' app_version.json)
-#          if [ "$bump_version" = "Major" ]; then
-#            major=$((major + 1))
-#          elif [ "$bump_version" = "Minor" ]; then
-#            minor=$((minor + 1))
-#          elif [ "$bump_version" = "Patch" ]; then
-#            patch=$((patch + 1))
-#          fi
-#          echo "major=$major" >> "$GITHUB_OUTPUT"
-#          echo "minor=$minor" >> "$GITHUB_OUTPUT"
-#          echo "patch=$patch" >> "$GITHUB_OUTPUT"
-#          echo "name=v$major.$minor.$patch" >> "$GITHUB_OUTPUT"
+      - name: Generate New Version
+        id: new_version
+        run: |
+          bump_version="${{ inputs.bump_version }}"
+          major=${{ steps.current_version.outputs.major }}
+          minor=${{ steps.current_version.outputs.minor }}
+          patch=${{ steps.current_version.outputs.patch }}
+          if [ "$bump_version" = "Major" ]; then
+            major=$((major + 1))
+          elif [ "$bump_version" = "Minor" ]; then
+            minor=$((minor + 1))
+          elif [ "$bump_version" = "Patch" ]; then
+            patch=$((patch + 1))
+          fi
+          echo "major=$major" >> "$GITHUB_OUTPUT"
+          echo "minor=$minor" >> "$GITHUB_OUTPUT"
+          echo "patch=$patch" >> "$GITHUB_OUTPUT"
+          echo "name=v$major.$minor.$patch" >> "$GITHUB_OUTPUT"
 #
 #      - name: Create Branch
 #        run: |
