@@ -58,9 +58,9 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git checkout -b "$new_version_name"
-          sed -i 's/version_major=.*/version_major=${{ steps.new_version.outputs.major }}/' gradle.properties
-          sed -i 's/version_minor=.*/version_minor=${{ steps.new_version.outputs.minor }}/' gradle.properties
-          sed -i 's/version_patch=.*/version_patch=${{ steps.new_version.outputs.patch }}/' gradle.properties
+          sed -i 's/version_major=.*/version_major=${{ steps.new_version.outputs.major }}/' app-version.properties
+          sed -i 's/version_minor=.*/version_minor=${{ steps.new_version.outputs.minor }}/' app-version.properties
+          sed -i 's/version_patch=.*/version_patch=${{ steps.new_version.outputs.patch }}/' app-version.properties
           git add .
           git commit -m "Bumped version to $new_version_name"
           git push origin "$new_version_name"
