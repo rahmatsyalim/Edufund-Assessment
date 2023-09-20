@@ -55,20 +55,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Generate Tag Version
+      - name: Generate Tag Name
+        id: tag
         run: |
           props=$(cat app-version.properties)
           version_major=$(echo "$props" | grep -E "version_major=" | cut -d'=' -f2)
           version_minor=$(echo "$props" | grep -E "version_minor=" | cut -d'=' -f2)
           version_patch=$(echo "$props" | grep -E "version_patch=" | cut -d'=' -f2)
-          echo "TAG_VERSION=v$version_major.$version_minor.$version_patch" >> "$GITHUB_ENV"
+          echo "name=v$version_major.$version_minor.$version_patch" >> "$GITHUB_OUTPUT"
 
       - name: Push Tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag -a $TAG_VERSION
-          git push origin tag $TAG_VERSION
+          git tag -a ${{ steps.tag.outputs.name }}
+          git push origin tag ${{ steps.tag.outputs.name }}
 
   create-release:
     needs: [ create-tag ]
