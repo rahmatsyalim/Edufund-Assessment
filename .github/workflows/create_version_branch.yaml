@@ -21,32 +21,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Generate New Version
-        id: new_version
+      - name: Read Current Version
+        id: current_version
         run: |
-          bump_version="${{ inputs.bump_version }}"
-          major=$(jq -r '.version.major' app_version.json)
-          minor=$(jq -r '.version.minor' app_version.json)
-          patch=$(jq -r '.version.patch' app_version.json)
-          if [ "$bump_version" = "Major" ]; then
-            major=$((major + 1))
-          elif [ "$bump_version" = "Minor" ]; then
-            minor=$((minor + 1))
-          elif [ "$bump_version" = "Patch" ]; then
-            patch=$((patch + 1))
-          fi
-          echo "major=$major" >> "$GITHUB_OUTPUT"
-          echo "minor=$minor" >> "$GITHUB_OUTPUT"
-          echo "patch=$patch" >> "$GITHUB_OUTPUT"
-          echo "name=v$major.$minor.$patch" >> "$GITHUB_OUTPUT"
+          props=$(cat app-version.properties)
+          version_major=$(echo "$props" | grep -E "version_major=" | cut -d'=' -f2)
+          version_minor=$(echo "$props" | grep -E "version_major=" | cut -d'=' -f2)
+          version_patch=$(echo "$props" | grep -E "version_major=" | cut -d'=' -f2)
+          
+          echo "$version_major.$version_minor.$version_patch"
 
-      - name: Create Branch
-        run: |
-          version_name="${{ steps.new_version.outputs.name }}"
-          git config user.name github-actions
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git checkout -b "$version_name"
-          jq '(.version.major = ${{ steps.new_version.outputs.major }}) | (.version.minor = ${{ steps.new_version.outputs.minor }}) | (.version.patch = ${{ steps.new_version.outputs.patch }})' app_version.json > app_version.json.tmp && mv app_version.json.tmp app_version.json
-          git add .
-          git commit -m "Bumped version to $version_name"
-          git push origin "$version_name"
+#      - name: Generate New Version
+#        id: new_version
+#        run: |
+#          bump_version="${{ inputs.bump_version }}"
+#          major=$(jq -r '.version.major' app_version.json)
+#          minor=$(jq -r '.version.minor' app_version.json)
+#          patch=$(jq -r '.version.patch' app_version.json)
+#          if [ "$bump_version" = "Major" ]; then
+#            major=$((major + 1))
+#          elif [ "$bump_version" = "Minor" ]; then
+#            minor=$((minor + 1))
+#          elif [ "$bump_version" = "Patch" ]; then
+#            patch=$((patch + 1))
+#          fi
+#          echo "major=$major" >> "$GITHUB_OUTPUT"
+#          echo "minor=$minor" >> "$GITHUB_OUTPUT"
+#          echo "patch=$patch" >> "$GITHUB_OUTPUT"
+#          echo "name=v$major.$minor.$patch" >> "$GITHUB_OUTPUT"
+#
+#      - name: Create Branch
+#        run: |
+#          version_name="${{ steps.new_version.outputs.name }}"
+#          git config user.name github-actions
+#          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+#          git checkout -b "$version_name"
+#          jq '(.version.major = ${{ steps.new_version.outputs.major }}) | (.version.minor = ${{ steps.new_version.outputs.minor }}) | (.version.patch = ${{ steps.new_version.outputs.patch }})' app_version.json > app_version.json.tmp && mv app_version.json.tmp app_version.json
+#          git add .
+#          git commit -m "Bumped version to $version_name"
+#          git push origin "$version_name"
