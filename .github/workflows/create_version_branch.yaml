@@ -51,6 +51,7 @@ jobs:
           echo "minor=$minor" >> "$GITHUB_OUTPUT"
           echo "patch=$patch" >> "$GITHUB_OUTPUT"
           echo "name=v$major.$minor.$patch" >> "$GITHUB_OUTPUT"
+          echo "$major.$minor.$patch"
 #
 #      - name: Create Branch
 #        run: |
