@@ -62,14 +62,14 @@ jobs:
           version_major=$(echo "$props" | grep -E "version_major=" | cut -d'=' -f2)
           version_minor=$(echo "$props" | grep -E "version_minor=" | cut -d'=' -f2)
           version_patch=$(echo "$props" | grep -E "version_patch=" | cut -d'=' -f2)
-          echo "TAG_NAME=v$version_major.$version_minor.$version_patch" >> "$GITHUB_ENV"
+          echo "name=v$version_major.$version_minor.$version_patch" >> "$GITHUB_OUTPUT"
 
       - name: Push Tag
         run: |
           git config user.name "GitHub Actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git tag $TAG_NAME
-          git push origin tag $TAG_NAME
+          git tag ${{ steps.tag.outputs.name }}
+          git push origin tag ${{ steps.tag.outputs.name }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -77,6 +77,7 @@ jobs:
           prerelease: false
           #          fail_on_unmatched_files: true
           #          files: app-release.aab
+          tag_name: ${{ steps.tag.outputs.name }}
           generate_release_notes: true
 
 #  create-release:
