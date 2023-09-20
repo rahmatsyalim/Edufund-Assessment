@@ -87,4 +87,5 @@ jobs:
           prerelease: false
 #          fail_on_unmatched_files: true
 #          files: app-release.aab
+          tag_name: ${{ needs.tag.outputs.name }}
           generate_release_notes: true
