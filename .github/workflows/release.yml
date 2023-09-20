@@ -61,7 +61,7 @@ jobs:
           version_major=$(echo "$props" | grep -E "version_major=" | cut -d'=' -f2)
           version_minor=$(echo "$props" | grep -E "version_minor=" | cut -d'=' -f2)
           version_patch=$(echo "$props" | grep -E "version_patch=" | cut -d'=' -f2)
-          echo "$TAG_VERSION=v$version_major.$version_minor.$version_patch" >> "$GITHUB_ENV"
+          echo "TAG_VERSION=v$version_major.$version_minor.$version_patch" >> "$GITHUB_ENV"
 
       - name: Push Tag
         run: |
