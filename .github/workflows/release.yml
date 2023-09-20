@@ -56,36 +56,44 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Generate Tag Name
-        id: tag
         run: |
           props=$(cat app-version.properties)
           version_major=$(echo "$props" | grep -E "version_major=" | cut -d'=' -f2)
           version_minor=$(echo "$props" | grep -E "version_minor=" | cut -d'=' -f2)
           version_patch=$(echo "$props" | grep -E "version_patch=" | cut -d'=' -f2)
-          echo "name=v$version_major.$version_minor.$version_patch" >> "$GITHUB_OUTPUT"
+          echo "TAG_NAME=v$version_major.$version_minor.$version_patch" >> "$GITHUB_ENV"
 
       - name: Push Tag
         run: |
           git config user.name "GitHub Actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git tag ${{ steps.tag.outputs.name }}
-          git push origin tag ${{ steps.tag.outputs.name }}
-
-  create-release:
-    needs: [ create-tag ]
-    name: Create Release
-    runs-on: ubuntu-latest
-    steps:
-#      - name: Download Artifact
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: aab
+          git tag $TAG_NAME
+          git push origin tag $TAG_NAME
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           prerelease: false
+          #          fail_on_unmatched_files: true
+          #          files: app-release.aab
+          tag_name: $TAG_NAME
+          generate_release_notes: true
+
+#  create-release:
+#    needs: [ create-tag ]
+#    name: Create Release
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download Artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: aab
+
+#      - name: Create Release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          prerelease: false
 #          fail_on_unmatched_files: true
 #          files: app-release.aab
-          tag_name: ${{ needs.tag.outputs.name }}
-          generate_release_notes: true
+#          tag_name: ${{ needs.tag.outputs.name }}
+#          generate_release_notes: true
