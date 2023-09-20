@@ -17,39 +17,39 @@ on:
           - 5
 
 jobs:
-#  build-app:
-#    runs-on: ubuntu-latest
-#    name: Generate Release App
-#    if: github.ref == 'refs/heads/master'
-#    timeout-minutes: 30
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v4
-#
-#      - name: Copy CI Gradle Properties
-#        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
-#
-#      - name: Setup JDK 11
-#        uses: actions/setup-java@v3
-#        with:
-#          distribution: 'zulu'
-#          java-version: '11'
-#
-#      - name: Setup Gradle
-#        uses: gradle/gradle-build-action@v2
-#
-#      - name: Build App
-#        run: ./gradlew bundleRelease
-#
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: aab
-#          path: app/build/outputs/bundle/release/app-release.aab
+  build-app:
+    runs-on: ubuntu-latest
+    name: Generate Release App
+    if: github.ref == 'refs/heads/master'
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  create-tag:
-#    needs: [ build-app ]
-    name: Create Version Tag
+      - name: Copy CI Gradle Properties
+        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+
+      - name: Setup JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Build App
+        run: ./gradlew bundleRelease
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: aab
+          path: app/build/outputs/bundle/release/app-release.aab
+
+  create-release:
+    needs: [ build-app ]
+    name: Create Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -71,30 +71,16 @@ jobs:
           git tag ${{ steps.tag.outputs.name }}
           git push origin tag ${{ steps.tag.outputs.name }}
 
-      - name: Create Release
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: aab
+
+      - name: Publish Release
         uses: softprops/action-gh-release@v1
         with:
           prerelease: false
-          #          fail_on_unmatched_files: true
-          #          files: app-release.aab
+          fail_on_unmatched_files: true
+          files: app-release.aab
           tag_name: ${{ steps.tag.outputs.name }}
           generate_release_notes: true
-
-#  create-release:
-#    needs: [ create-tag ]
-#    name: Create Release
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Download Artifact
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: aab
-
-#      - name: Create Release
-#        uses: softprops/action-gh-release@v1
-#        with:
-#          prerelease: false
-#          fail_on_unmatched_files: true
-#          files: app-release.aab
-#          tag_name: ${{ needs.tag.outputs.name }}
-#          generate_release_notes: true
