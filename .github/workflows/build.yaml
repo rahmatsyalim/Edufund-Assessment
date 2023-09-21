@@ -59,3 +59,9 @@ jobs:
 
       - name: Build App
         run: ./gradlew assemble
+
+      - name: Upload lint report
+        uses: actions/upload-artifact@v3
+        with:
+          name: lint-report.html
+          path: app/build/outputs/apk/**/**.apk
