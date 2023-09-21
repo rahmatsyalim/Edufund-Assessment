@@ -1,44 +1,20 @@
 name: Build
 
 on:
-  push:
+  workflow_run:
+    workflows: [ Lint Check ]
+    types: [ completed ]
     branches:
       - master
       - development
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-  lint_check:
-    name: Lint Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Validate gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Copy ci-gradle.properties
-        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
-
-      - name: Setup gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Run lint
-        run: ./gradlew lintDebug
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: lint-report.html
-          path: app/build/reports/lint-results-debug.html
-
   build:
-    needs: [ lint_check]
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: contains(github.event.head_commit.message, '[build]')
+    if: github.event.workflow_run.conclusion == 'success' && contains(github.event.workflow_run.head_commit.message, '[build]')
     steps:
       - name: Checkout
         uses: actions/checkout@v4

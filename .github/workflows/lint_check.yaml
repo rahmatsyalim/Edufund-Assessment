@@ -1,16 +1,15 @@
 name: Lint Check
 
 on:
-  pull_request:
-    branches: [ master, development ]
-  workflow_dispatch:
-
-concurrency:
-  group: lint_check_${{ github.ref }}
-  cancel-in-progress: true
+  push:
+    branches:
+      - master
+      - development
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   lint_check:
+    name: Lint Check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
