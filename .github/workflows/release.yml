@@ -47,10 +47,12 @@ jobs:
           name: aab
           path: app/build/outputs/bundle/release/app-release.aab
 
-  create-release:
+  create-tag:
     needs: [ build-app ]
-    name: Create Release
+    name: Create Tag
     runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.tag.outputs.name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -71,16 +73,21 @@ jobs:
           git tag ${{ steps.tag.outputs.name }}
           git push origin tag ${{ steps.tag.outputs.name }}
 
+  release:
+    needs: [ create-tag ]
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
       - name: Download Artifact
         uses: actions/download-artifact@v3
         with:
           name: aab
 
-      - name: Publish Release
+      - name: Publish Github Release
         uses: softprops/action-gh-release@v1
         with:
           prerelease: false
           fail_on_unmatched_files: true
           files: app-release.aab
-          tag_name: ${{ steps.tag.outputs.name }}
+          tag_name: ${{ needs.create-tag.outputs.tag_name }}
           generate_release_notes: true
