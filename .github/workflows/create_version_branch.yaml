@@ -56,7 +56,7 @@ jobs:
         run: |
           new_version_name="${{ steps.new_version.outputs.name }}"
           git config user.name github-actions
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git config user.email 41898282+github-actions@users.noreply.github.com
           git checkout -b "$new_version_name"
           sed -i 's/version_major=.*/version_major=${{ steps.new_version.outputs.major }}/' app-version.properties
           sed -i 's/version_minor=.*/version_minor=${{ steps.new_version.outputs.minor }}/' app-version.properties
