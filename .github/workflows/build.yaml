@@ -27,13 +27,14 @@ jobs:
       - name: Run lint
         run: ./gradlew lintDebug
 
-      - name: Upload lint report
+      - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: lint-report.html
           path: app/build/reports/lint-results-debug.html
 
   build:
+    needs: [ lint_check]
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -60,8 +61,8 @@ jobs:
       - name: Build App
         run: ./gradlew assemble
 
-      - name: Upload lint report
+      - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: lint-report.html
+          name: APKs
           path: app/build/outputs/apk/**/**.apk
